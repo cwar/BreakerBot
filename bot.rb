@@ -79,20 +79,11 @@ bot.message(with_text: '!break') do |event|
     sessions[event.author.username] = {
         type: :break,
         state: 0,
-        server: event.server,
-        available_rooms: break_announcement_rooms(event.server)
+        server: event.server
     }
     b = BreakerBot::Break.new(bot, event, sessions[event.author.username])
     
     b.start
-end
-
-def break_channel_categories(server)
-    server.channels.select{ |c| c.name.downcase.include?('room') && c.type == Discordrb::Channel::TYPES[:category] }
-end
-
-def break_announcement_rooms(server)
-    server.channels.select{ |c| c.name.include?('announcement') && c.type == Discordrb::Channel::TYPES[:text] && break_channel_categories(server).any? { |cat| cat.id == c.parent_id } }
 end
 
 bot.run
